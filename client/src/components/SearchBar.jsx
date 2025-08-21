@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-function SearchBar({ onSearch }) {
+function SearchBar({ onSearch, value: externalValue }) {
   const [value, setValue] = useState("");
+
+  // Update internal value when external value changes
+  useEffect(() => {
+    if (externalValue !== undefined) {
+      setValue(externalValue);
+    }
+  }, [externalValue]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

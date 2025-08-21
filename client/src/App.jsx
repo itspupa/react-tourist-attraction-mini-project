@@ -36,6 +36,23 @@ function App() {
     fetchData(searchTerm);
   }, [searchTerm]);
 
+  // ฟังก์ชันเพิ่ม tag ลงใน search term โดยไม่ซ้ำ
+  const addTagToSearch = (currentSearch, newTag) => {
+    const currentTags = currentSearch.trim().split(/\s+/).filter(tag => tag.length > 0);
+    
+    // ตรวจสอบว่า tag นี้มีอยู่แล้วหรือไม่
+    if (currentTags.includes(newTag)) {
+      return currentSearch; // ถ้ามีอยู่แล้ว ไม่ต้องเพิ่ม
+    }
+    
+    // เพิ่ม tag ใหม่
+    if (currentTags.length === 0) {
+      return newTag;
+    } else {
+      return currentTags.join(' ') + ' ' + newTag;
+    }
+  };
+
   // Handle tag click
   const handleTagClick = (tag) => {
     const newSearchTerm = addTagToSearch(searchTerm, tag);
@@ -49,7 +66,7 @@ function App() {
           เที่ยวไหนดี
         </h1>
         <div className="mt-4 max-w-4xl mx-auto px-4">
-          <SearchBar onSearch={setSearchTerm} />
+          <SearchBar onSearch={setSearchTerm} value={searchTerm} />
         </div>
       </header>
 

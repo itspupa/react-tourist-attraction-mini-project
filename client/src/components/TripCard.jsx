@@ -1,6 +1,20 @@
 import { Link } from "lucide-react";
+import { useState } from "react";
 
-function TripCard({ title, description, photos = [], tags = [], url = "#" }) {
+function TripCard({ title, description, photos = [], tags = [], url = "#", onTagClick }) {
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  // ฟังก์ชัน copy link ลง clipboard
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row gap-6 p-6 bg-white rounded-xl  mb-6">
       {/* รูปใหญ่ซ้าย */}
@@ -48,6 +62,7 @@ function TripCard({ title, description, photos = [], tags = [], url = "#" }) {
             <span key={i}>
               <span
                 className="text-gray-500 hover:text-blue-700 text-sm cursor-pointer underline"
+                onClick={() => onTagClick && onTagClick(tag)}
               >
                 {tag}
               </span>
@@ -75,7 +90,20 @@ function TripCard({ title, description, photos = [], tags = [], url = "#" }) {
       </div>
 
       {/* icon ด้านขวา */}
-      <div className="hidden md:flex items-end">
+      <div className="hidden md:flex items-end gap-2">
+        {/* Copy link button */}
+        <button
+          onClick={copyToClipboard}
+          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+            copySuccess 
+              ? 'bg-green-500 text-white' 
+              : 'bg-blue-500 text-white hover:bg-blue-600'
+          }`}
+          title="Copy link to clipboard"
+        >
+          {copySuccess ? 'Copied!' : 'Copy Link'}
+        </button>
+        
         <a href={url} target="_blank" rel="noopener noreferrer">
           <Link className="text-blue-500 w-7 h-7 hover:text-blue-600" />
         </a>
